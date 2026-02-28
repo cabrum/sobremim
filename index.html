@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodrigo Alves | Engenheiro de Software & IA</title>
+    <meta name="description" content="Engenheiro de Software e Elétrica. Especialista em IA & Automação. Criador do Yiellem I.A.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Gradient Background Animation */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        /* Grid Pattern */
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+        
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        
+        /* Glow Effects */
+        .glow-purple {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+        
+        .glow-blue {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Terminal */
+        .terminal {
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: rgba(99, 102, 241, 0.1);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .terminal-dot.red { background: #ef4444; }
+        .terminal-dot.yellow { background: #eab308; }
+        .terminal-dot.green { background: #22c55e; }
+        
+        .terminal-body {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .terminal-line {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .prompt { color: #22c55e; }
+        .command { color: #e2e8f0; }
+        .output { color: #94a3b8; }
+        .highlight { color: #818cf8; }
+        .accent { color: #c084fc; }
+        
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.5);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 24px;
+            width: 2px;
+            height: calc(100% - 16px);
+            background: linear-gradient(to bottom, rgba(129, 140, 248, 0.5), transparent);
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        /* Skill Tags */
+        .skill-tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            display: inline-block;
+            margin: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .skill-tag:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* Project Card */
+        .project-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .gradient-bg {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-gradient mono">RA</a>
+            <div class="hidden md:flex gap-8 text-sm">
+                <a href="#sobre" class="hover:text-white transition-colors">Sobre</a>
+                <a href="#experiencia" class="hover:text-white transition-colors">Experiência</a>
+                <a href="#projetos" class="hover:text-white transition-colors">Projetos</a>
+                <a href="#certificacoes" class="hover:text-white transition-colors">Certificações</a>
+                <a href="#contato" class="hover:text-white transition-colors">Contato</a>
+            </div>
+            <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" class="glass px-4 py-2 rounded-full text-sm hover:bg-white/10 transition-all">
+                <i class="fab fa-linkedin mr-2"></i>LinkedIn
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="reveal">
+                <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6 status-badge">
+                    <span class="mono">Disponível para oportunidades</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="text-gradient">Rodrigo Alves</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-400 mb-4">
+                    Engenheiro de Software & Elétrica
+                </p>
+                
+                <p class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+                    Especialista em <span class="text-indigo-400">IA & Automação</span>. 
+                    Criador do <span class="text-purple-400">Yiellem I.A</span>. 
+                    Transformando sistemas complexos em soluções elegantes.
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#projetos" class="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
+                        Ver Projetos
+                    </a>
+                    <a href="mailto:contato@rodrigoalves.dev" class="glass px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all">
+                        <i class="fas fa-envelope mr-2"></i>Contato
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Terminal -->
+            <div class="mt-16 max-w-2xl mx-auto reveal">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="ml-4 text-sm text-gray-500 mono">rodrigo@dev ~ yiellem-system</span>
+                    </div>
+                    <div class="terminal-body text-left" id="terminal-content">
+                        <div class="terminal-line" style="animation-delay: 0.2s">
+                            <span class="prompt">➜</span> <span class="command">whoami</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 0.8s">
+                            <span class="output">Rodrigo Alves — Engenheiro de Software & IA</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 1.4s">
+                            <span class="prompt">➜</span> <span class="command">ls skills/</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 2s">
+                            <span class="highlight">inteligencia-artificial/</span>  
+                            <span class="accent">automacao/</span>  
+                            <span class="highlight">engenharia-software/</span>  
+                            <span class="accent">infraestrutura/</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 2.6s">
+                            <span class="prompt">➜</span> <span class="command">cat status.json</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 3.2s">
+                            <span class="output">{
+  <span class="highlight">"projeto_atual"</span>: <span class="accent">"Yiellem I.A"</span>,
+  <span class="highlight">"status"</span>: <span class="accent">"operacional desde 2022"</span>,
+  <span class="highlight">"especialidade"</span>: <span class="accent">"IA conversacional multi-idioma"</span>
+}</span>
+                        </div>
+                        <div class="terminal-line" style="animation-delay: 3.8s">
+                            <span class="prompt">➜</span> <span class="command">_</span>
+                            <span class="animate-pulse">▋</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="glass glass-hover rounded-2xl p-6 text-center reveal">
+                    <div class="text-3xl font-bold text-gradient mb-2">3+</div>
+                    <div class="text-sm text-gray-400">Anos com Yiellem I.A</div>
+                </div>
+                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.1s">
+                    <div class="text-3xl font-bold text-gradient mb-2">10+</div>
+                    <div class="text-sm text-gray-400">Certificações</div>
+                </div>
+                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.2s">
+                    <div class="text-3xl font-bold text-gradient mb-2">∞</div>
+                    <div class="text-sm text-gray-400">Idiomas Suportados</div>
+                </div>
+                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.3s">
+                    <div class="text-3xl font-bold text-gradient mb-2">100%</div>
+                    <div class="text-sm text-gray-400">Foco em Precisão</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre Section -->
+    <section id="sobre" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">SOBRE</h2>
+            <h3 class="text-3xl md:text-4xl font-bold mb-8 reveal">Engenheiro por formação.<br>Inovador por natureza.</h3>
+            
+            <div class="glass rounded-2xl p-8 reveal">
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    Sou Engenheiro de Software e Elétrica com paixão por transformar ideias complexas em 
+                    soluções práticas. Minha jornada me levou desde a infraestrutura de grandes rodovias 
+                    (BR-101, Via Dutra, Rio-Santos) até o desenvolvimento de inteligência artificial 
+                    conversacional que fala todos os idiomas.
+                </p>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    Em 2022, criei a <strong class="text-purple-400">Yiellem I.A</strong> — uma assistente 
+                    virtual via WhatsApp que conecta múltiplos modelos de IA (GPT, Bing) para responder 
+                    perguntas com precisão sobre temas nacionais, em qualquer idioma.
+                </p>
+                <p class="text-gray-300 leading-relaxed">
+                    Acredito que a automatização inteligente é o futuro, e trabalho para tornar essa 
+                    tecnologia acessível e útil no dia a dia.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiência Section -->
+    <section id="experiencia" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">EXPERIÊNCIA</h2>
+            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">Onde já trabalhei</h3>
+            
+            <div class="space-y-8">
+                <!-- Timeline Item 1 -->
+                <div class="glass rounded-2xl p-6 reveal">
+                    <div class="timeline-item">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Gestão de Projetos & Infraestrutura</h4>
+                                <p class="text-gray-400">Estradas e Rodovias (BR-101, Via Dutra, Rio-Santos)</p>
+                            </div>
+                            <span class="text-sm text-gray-500 mt-2 md:mt-0">2021 — Presente</span>
+                        </div>
+                        <p class="text-gray-300 text-sm">
+                            Atuação em projetos de infraestrutura rodoviária de grande porte, 
+                            incluindo entregas estratégicas como duplicação de pistas na Serra do Mar 
+                            e gestão de operações em vias primárias do Rio de Janeiro.
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="skill-tag">Gestão de Projetos</span>
+                            <span class="skill-tag">Infraestrutura</span>
+                            <span class="skill-tag">Operações</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="glass rounded-2xl p-6 reveal">
+                    <div class="timeline-item">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Projetos de Automação</h4>
+                                <p class="text-gray-400">Engenharia Elétrica & Software</p>
+                            </div>
+                            <span class="text-sm text-color-500 mt-2 md:mt-0">2019 — Presente</span>
+                        </div>
+                        <p class="text-gray-300 text-sm">
+                            Desenvolvimento de soluções automatizadas para otimização de processos, 
+                            integração de sistemas e implementação de tecnologias emergentes.
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="skill-tag">Automação</span>
+                            <span class="skill-tag">Integração de Sistemas</span>
+                            <span class="skill-tag">IoT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projetos Section -->
+    <section id="projetos" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">PROJETOS DESTACADOS</h2>
+            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">O que tenho construído</h3>
+            
+            <div class="project-card reveal">
+                <div class="flex flex-col md:flex-row md:items-start gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl">
+                                🤖
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold text-gradient">Yiellem I.A</h4>
+                                <span class="text-sm text-gray-500">2022 — Presente (Ativo)</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Assistente de inteligência artificial via WhatsApp que responde perguntas, 
+                            dúvidas e questões nacionais com precisão. Conectada a múltiplos modelos 
+                            de IA (ChatGPT, Bing) para máxima abrangência.
+                        </p>
+                        
+                        <div class="mb-4">
+                            <p class="text-gray-400 text-sm mb-2">Funcionalidades:</p>
+                            <ul class="text-gray-300 text-sm space-y-1">
+                                <li>• Suporte multi-idioma (todos os idiomas possíveis)</li>
+                                <li>• Integração com WhatsApp Business API</li>
+                                <li>• Respostas precisas sobre temas brasileiros</li>
+                                <li>• Arquitetura escalável e robusta</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">OpenAI API</span>
+                            <span class="skill-tag">WhatsApp API</span>
+                            <span class="skill-tag">Machine Learning</span>
+                            <span class="skill-tag">NLP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-64 flex flex-col gap-3">
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-green-400 mb-1">✓</div>
+                            <div class="text-sm text-gray-400">Operacional</div>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-indigo-400 mb-1">🌐</div>
+                            <div class="text-sm text-gray-400">Multi-idioma</div>
+                        </div>
+                        <div class="glass rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-purple-400 mb-1">⚡</div>
+                            <div class="text-sm text-gray-400">Tempo Real</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificações Section -->
+    <section id="certificacoes" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">CERTIFICAÇÕES</h2>
+            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">Aprendizado contínuo</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cert 1 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">IA</h4>
+                            <p class="text-sm text-gray-400">OpenAI</p>
+                            <p class="text-xs text-gray-500 mt-1">2024 — 2029</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.05s">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">Cyber Security</h4>
+                            <p class="text-sm text-gray-400">Fortinet</p>
+                            <p class="text-xs text-gray-500 mt-1">2022 — 2029</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.1s">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">Certified Scrum Professional</h4>
+                            <p class="text-sm text-gray-400">CertiProf</p>
+                            <p class="text-xs text-gray-500 mt-1">2023 — 2033</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 4 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.15s">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">CCNA Wireless</h4>
+                            <p class="text-sm text-gray-400">Cisco</p>
+                            <p class="text-xs text-gray-500 mt-1">2019 — 2030</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 5 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.2s">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
+                            <i class="fas fa-microsoft"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">Office Specialist: Expert</h4>
+                            <p class="text-sm text-gray-400">Microsoft</p>
+                            <p class="text-xs text-gray-500 mt-1">2008 — 2034</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 6 -->
+                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.25s">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">Google Ads</h4>
+                            <p class="text-sm text-gray-400">Google</p>
+                            <p class="text-xs text-gray-500 mt-1">2022 — 2029</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 reveal">Tech Stack</h2>
+            
+            <div class="glass rounded-2xl p-8 reveal">
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">Inteligência Artificial</span>
+                    <span class="skill-tag">Machine Learning</span>
+                    <span class="skill-tag">APIs REST</span>
+                    <span class="skill-tag">Automação</span>
+                    <span class="skill-tag">NLP</span>
+                    <span class="skill-tag">Cloud Computing</span>
+                    <span class="skill-tag">Cybersecurity</span>
+                    <span class="skill-tag">Scrum</span>
+                    <span class="skill-tag">Gestão de Projetos</span>
+                    <span class="skill-tag">Infraestrutura</span>
+                    <span class="skill-tag">Redes</span>
+                    <span class="skill-tag">Linux</span>
+                    <span class="skill-tag">Docker</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato Section -->
+    <section id="contato" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">CONTATO</h2>
+            <h3 class="text-3xl md:text-4xl font-bold mb-8 reveal">Vamos conversar?</h3>
+            
+            <p class="text-gray-400 mb-8 reveal">
+                Sempre aberto a discutir projetos de IA, automação ou oportunidades de colaboração.
+            </p>
+            
+            <div class="glass rounded-2xl p-8 reveal">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" 
+                       class="glass glass-hover rounded-xl p-6 flex items-center gap-4 text-left group">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-white">LinkedIn</div>
+                            <div class="text-sm text-gray-400">/in/rodrigo-alves</div>
+                        </div>
+                    </a>
+                    
+                    <a href="mailto:contato@rodrigoalves.dev" 
+                       class="glass glass-hover rounded-xl p-6 flex items-center gap-4 text-left group">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500 group-hover:text-white transition-all">
+                            <i class="fas fa-envelope text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-white">Email</div>
+                            <div class="text-sm text-gray-400">contato@rodrigoalves.dev</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-gray-500 text-sm">
+                © 2025 Rodrigo Alves. Construído com código & café.
+            </div>
+            <div class="flex gap-6">
+                <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fab fa-linkedin text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Terminal typing effect enhancement
+        const terminalLines = document.querySelectorAll('.terminal-line');
+        terminalLines.forEach((line, index) => {
+            line.style.animationDelay = `${index * 0.6}s`;
+        });
+    </script>
+</body>
+</html>
