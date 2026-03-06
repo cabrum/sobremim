@@ -4,634 +4,574 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rodrigo Alves | Engenheiro de Software & IA</title>
-    <meta name="description" content="Engenheiro de Software e Elétrica. Especialista em IA & Automação. Criador do Yiellem I.A.">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Portfólio de Rodrigo Alves - Engenheiro de Software e IA. Criador da Yiellem I.A">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'space': ['Space Grotesk', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-purple': '#b026ff',
+                        'neon-cyan': '#00f5ff',
+                        'neon-pink': '#ff00ff',
+                        'deep-space': '#050508',
+                        'glass': 'rgba(255, 255, 255, 0.03)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'glitch': 'glitch 1s linear infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'morph': 'morph 8s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        
-        html {
-            scroll-behavior: smooth;
+
+        :root {
+            --cursor-size: 20px;
+            --cursor-hover-size: 60px;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #e2e8f0;
+            background: #050508;
+            color: #fff;
             overflow-x: hidden;
+            cursor: none;
         }
-        
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
         }
-        
-        /* Gradient Background Animation */
-        .gradient-bg {
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 2px solid #00f5ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #b026ff;
+            border-radius: 50%;
+        }
+
+        .cursor.hover {
+            width: var(--cursor-hover-size);
+            height: var(--cursor-hover-size);
+            border-color: #b026ff;
+            background: rgba(176, 38, 255, 0.1);
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Canvas Background */
+        #particles-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Gradient Mesh */
+        .gradient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -2;
-            animation: pulse 15s ease-in-out infinite;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(176, 38, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #050508 0%, #0a0a15 50%, #050508 100%);
+            animation: meshMove 20s ease-in-out infinite;
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+
+        @keyframes meshMove {
+            0%, 100% { 
+                filter: hue-rotate(0deg);
+                transform: scale(1);
+            }
+            50% { 
+                filter: hue-rotate(30deg);
+                transform: scale(1.05);
+            }
         }
-        
+
+        /* Holographic Card */
+        .holo-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: left 0.7s ease;
+        }
+
+        .holo-card:hover::before {
+            left: 100%;
+        }
+
+        .holo-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
+            box-shadow: 
+                0 25px 50px rgba(176, 38, 255, 0.15),
+                0 0 30px rgba(0, 245, 255, 0.1);
+            border-color: rgba(176, 38, 255, 0.3);
+        }
+
+        /* Neon Text */
+        .neon-text {
+            background: linear-gradient(135deg, #00f5ff 0%, #b026ff 50%, #ff00ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite linear alternate-reverse;
+            color: #00f5ff;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 3s infinite linear alternate-reverse;
+            color: #b026ff;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); transform: translateX(-2px); }
+            20% { clip-path: inset(10% 0 60% 0); transform: translateX(2px); }
+            40% { clip-path: inset(40% 0 40% 0); transform: translateX(-2px); }
+            60% { clip-path: inset(60% 0 20% 0); transform: translateX(2px); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translateX(-2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(95% 0 0 0); transform: translateX(2px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translateX(-2px); }
+            40% { clip-path: inset(40% 0 40% 0); transform: translateX(2px); }
+            60% { clip-path: inset(20% 0 60% 0); transform: translateX(-2px); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translateX(2px); }
+        }
+
+        /* Floating Elements */
+        .float-element {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-element:nth-child(2) { animation-delay: -2s; }
+        .float-element:nth-child(3) { animation-delay: -4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        /* Skill Orb */
+        .skill-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(0, 245, 255, 0.2), rgba(176, 38, 255, 0.1));
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .skill-orb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            border-color: rgba(0, 245, 255, 0.6);
+        }
+
+        /* Timeline */
+        .timeline-line {
+            background: linear-gradient(to bottom, #00f5ff, #b026ff, transparent);
+        }
+
+        .timeline-dot {
+            background: radial-gradient(circle, #00f5ff 0%, #b026ff 100%);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+
+        /* Button Styles */
+        .btn-neon {
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+            border: 1px solid rgba(0, 245, 255, 0.5);
+            color: #00f5ff;
+            transition: all 0.4s ease;
+        }
+
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+
+        .btn-neon:hover {
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.4);
+            border-color: #00f5ff;
+            color: #fff;
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00f5ff, #b026ff, #ff00ff);
+            z-index: 9999;
+            transform-origin: left;
+        }
+
+        /* Navigation */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00f5ff, #b026ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
         /* Grid Pattern */
-        .grid-pattern {
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             z-index: -1;
+            pointer-events: none;
+            perspective: 1000px;
+            transform-style: preserve-3d;
         }
-        
-        /* Glass Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .glass-hover:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            transition: all 0.3s ease;
-        }
-        
-        /* Glow Effects */
-        .glow-purple {
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
-        }
-        
-        .glow-blue {
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-        }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #60a5fa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Terminal */
-        .terminal {
-            background: rgba(10, 10, 15, 0.9);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .terminal-header {
-            background: rgba(99, 102, 241, 0.1);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .terminal-dot.red { background: #ef4444; }
-        .terminal-dot.yellow { background: #eab308; }
-        .terminal-dot.green { background: #22c55e; }
-        
-        .terminal-body {
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        .terminal-line {
-            margin-bottom: 8px;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-        
-        .prompt { color: #22c55e; }
-        .command { color: #e2e8f0; }
-        .output { color: #94a3b8; }
-        .highlight { color: #818cf8; }
-        .accent { color: #c084fc; }
-        
-        /* Timeline */
-        .timeline-item {
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #818cf8, #c084fc);
-            box-shadow: 0 0 15px rgba(129, 140, 248, 0.5);
-        }
-        
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 24px;
-            width: 2px;
-            height: calc(100% - 16px);
-            background: linear-gradient(to bottom, rgba(129, 140, 248, 0.5), transparent);
-        }
-        
-        .timeline-item:last-child::after {
-            display: none;
-        }
-        
-        /* Skill Tags */
-        .skill-tag {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            display: inline-block;
-            margin: 4px;
-            transition: all 0.3s ease;
-        }
-        
-        .skill-tag:hover {
-            background: rgba(99, 102, 241, 0.2);
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: scale(1.05);
-        }
-        
-        /* Project Card */
-        .project-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s ease;
-        }
-        
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
-            border-color: rgba(99, 102, 241, 0.4);
-        }
-        
-        /* Status Badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #22c55e;
-        }
-        
-        .status-badge::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #22c55e;
-            animation: blink 2s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        /* Scroll Reveal */
+
+        /* Reveal Animation */
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
+            transform: translateY(50px);
         }
-        
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Mobile Menu */
+
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .gradient-bg {
-                animation: none;
+            .cursor, .cursor-follower {
+                display: none;
+            }
+            body {
+                cursor: auto;
             }
         }
     </style>
 </head>
 <body>
-    <div class="gradient-bg"></div>
-    <div class="grid-pattern"></div>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <!-- Background Elements -->
+    <div class="gradient-mesh"></div>
+    <canvas id="particles-canvas"></canvas>
+    <div class="cyber-grid"></div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-xl font-bold text-gradient mono">RA</a>
-            <div class="hidden md:flex gap-8 text-sm">
-                <a href="#sobre" class="hover:text-white transition-colors">Sobre</a>
-                <a href="#experiencia" class="hover:text-white transition-colors">Experiência</a>
-                <a href="#projetos" class="hover:text-white transition-colors">Projetos</a>
-                <a href="#certificacoes" class="hover:text-white transition-colors">Certificações</a>
-                <a href="#contato" class="hover:text-white transition-colors">Contato</a>
-            </div>
-            <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" class="glass px-4 py-2 rounded-full text-sm hover:bg-white/10 transition-all">
-                <i class="fab fa-linkedin mr-2"></i>LinkedIn
+    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="font-space font-bold text-2xl tracking-wider nav-link" data-cursor-hover>
+                <span class="neon-text">RA</span>
             </a>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#sobre" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors" data-cursor-hover>Sobre</a>
+                <a href="#experiencia" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors" data-cursor-hover>Experiência</a>
+                <a href="#projetos" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors" data-cursor-hover>Projetos</a>
+                <a href="#skills" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors" data-cursor-hover>Skills</a>
+                <a href="#contato" class="btn-neon px-6 py-2 rounded-full text-sm font-medium" data-cursor-hover>Contato</a>
+            </div>
+
+            <button id="mobileMenuBtn" class="md:hidden text-white" data-cursor-hover>
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center px-6 pt-20">
-        <div class="max-w-5xl mx-auto text-center">
-            <div class="reveal">
-                <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6 status-badge">
-                    <span class="mono">Disponível para oportunidades</span>
-                </div>
-                
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                    <span class="text-gradient">Rodrigo Alves</span>
-                </h1>
-                
-                <p class="text-xl md:text-2xl text-gray-400 mb-4">
-                    Engenheiro de Software & Elétrica
-                </p>
-                
-                <p class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
-                    Especialista em <span class="text-indigo-400">IA & Automação</span>. 
-                    Criador do <span class="text-purple-400">Yiellem I.A</span>. 
-                    Transformando sistemas complexos em soluções elegantes.
-                </p>
-                
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="#projetos" class="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
-                        Ver Projetos
-                    </a>
-                    <a href="mailto:contato@rodrigoalves.dev" class="glass px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all">
-                        <i class="fas fa-envelope mr-2"></i>Contato
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Terminal -->
-            <div class="mt-16 max-w-2xl mx-auto reveal">
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <div class="terminal-dot red"></div>
-                        <div class="terminal-dot yellow"></div>
-                        <div class="terminal-dot green"></div>
-                        <span class="ml-4 text-sm text-gray-500 mono">rodrigo@dev ~ yiellem-system</span>
-                    </div>
-                    <div class="terminal-body text-left" id="terminal-content">
-                        <div class="terminal-line" style="animation-delay: 0.2s">
-                            <span class="prompt">➜</span> <span class="command">whoami</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 0.8s">
-                            <span class="output">Rodrigo Alves — Engenheiro de Software & IA</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 1.4s">
-                            <span class="prompt">➜</span> <span class="command">ls skills/</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 2s">
-                            <span class="highlight">inteligencia-artificial/</span>  
-                            <span class="accent">automacao/</span>  
-                            <span class="highlight">engenharia-software/</span>  
-                            <span class="accent">infraestrutura/</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 2.6s">
-                            <span class="prompt">➜</span> <span class="command">cat status.json</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 3.2s">
-                            <span class="output">{
-  <span class="highlight">"projeto_atual"</span>: <span class="accent">"Yiellem I.A"</span>,
-  <span class="highlight">"status"</span>: <span class="accent">"operacional desde 2022"</span>,
-  <span class="highlight">"especialidade"</span>: <span class="accent">"IA conversacional multi-idioma"</span>
-}</span>
-                        </div>
-                        <div class="terminal-line" style="animation-delay: 3.8s">
-                            <span class="prompt">➜</span> <span class="command">_</span>
-                            <span class="animate-pulse">▋</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8">
+        <a href="#sobre" class="text-2xl font-space font-medium text-white">Sobre</a>
+        <a href="#experiencia" class="text-2xl font-space font-medium text-white">Experiência</a>
+        <a href="#projetos" class="text-2xl font-space font-medium text-white">Projetos</a>
+        <a href="#skills" class="text-2xl font-space font-medium text-white">Skills</a>
+        <a href="#contato" class="text-2xl font-space font-medium text-neon-cyan">Contato</a>
+        <button id="closeMobileMenu" class="absolute top-6 right-6 text-white">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
 
-    <!-- Stats Section -->
-    <section class="py-20 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="glass glass-hover rounded-2xl p-6 text-center reveal">
-                    <div class="text-3xl font-bold text-gradient mb-2">3+</div>
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-6 pt-20 relative overflow-hidden">
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 w-32 h-32 rounded-full bg-gradient-to-br from-neon-purple/20 to-transparent blur-3xl float-element"></div>
+        <div class="absolute bottom-20 right-10 w-48 h-48 rounded-full bg-gradient-to-br from-neon-cyan/20 to-transparent blur-3xl float-element"></div>
+        <div class="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-gradient-to-br from-neon-pink/10 to-transparent blur-2xl float-element"></div>
+
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <!-- Status Badge -->
+            <div class="reveal inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-8 border border-neon-cyan/30" data-cursor-hover>
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span class="text-sm font-mono text-neon-cyan">Disponível para oportunidades</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="reveal font-space font-bold text-6xl md:text-8xl lg:text-9xl mb-6 glitch" data-text="RODRIGO ALVES">
+                <span class="neon-text">RODRIGO ALVES</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="reveal text-xl md:text-2xl text-gray-400 mb-4 font-light">
+                Engenheiro de <span class="text-neon-cyan">Software</span> & <span class="text-neon-purple">IA</span>
+            </p>
+
+            <p class="reveal text-lg text-gray-500 mb-12 max-w-2xl mx-auto">
+                Transformando realidades através de código. Criador da 
+                <span class="text-neon-pink font-semibold">Yiellem I.A</span> — 
+                uma assistente que transcende barreiras linguísticas e tecnológicas.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="reveal flex flex-wrap justify-center gap-4 mb-16">
+                <a href="#projetos" class="group relative px-8 py-4 bg-gradient-to-r from-neon-purple to-neon-pink rounded-full font-space font-semibold text-white overflow-hidden" data-cursor-hover>
+                    <span class="relative z-10 flex items-center gap-2">
+                        Ver Projetos
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </a>
+                <a href="#contato" class="btn-neon px-8 py-4 rounded-full font-space font-semibold flex items-center gap-2" data-cursor-hover>
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    Entrar em Contato
+                </a>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                <div class="holo-card rounded-2xl p-6 text-center" data-cursor-hover>
+                    <div class="text-4xl font-space font-bold neon-text mb-2">3+</div>
                     <div class="text-sm text-gray-400">Anos com Yiellem I.A</div>
                 </div>
-                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.1s">
-                    <div class="text-3xl font-bold text-gradient mb-2">10+</div>
+                <div class="holo-card rounded-2xl p-6 text-center" data-cursor-hover>
+                    <div class="text-4xl font-space font-bold neon-text mb-2">10+</div>
                     <div class="text-sm text-gray-400">Certificações</div>
                 </div>
-                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.2s">
-                    <div class="text-3xl font-bold text-gradient mb-2">∞</div>
+                <div class="holo-card rounded-2xl p-6 text-center" data-cursor-hover>
+                    <div class="text-4xl font-space font-bold neon-text mb-2">∞</div>
                     <div class="text-sm text-gray-400">Idiomas Suportados</div>
                 </div>
-                <div class="glass glass-hover rounded-2xl p-6 text-center reveal" style="transition-delay: 0.3s">
-                    <div class="text-3xl font-bold text-gradient mb-2">100%</div>
-                    <div class="text-sm text-gray-400">Foco em Precisão</div>
+                <div class="holo-card rounded-2xl p-6 text-center" data-cursor-hover>
+                    <div class="text-4xl font-space font-bold neon-text mb-2">24/7</div>
+                    <div class="text-sm text-gray-400">Operação IA</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500">
+            <span class="text-xs font-mono tracking-widest">SCROLL</span>
+            <div class="w-6 h-10 border-2 border-gray-600 rounded-full flex justify-center pt-2">
+                <div class="w-1 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
             </div>
         </div>
     </section>
 
-    <!-- Sobre Section -->
-    <section id="sobre" class="py-20 px-6">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">SOBRE MIM</h2>
-            <h3 class="text-3xl md:text-4xl font-bold mb-8 reveal">Transformando desafios em<br>soluções inteligentes.</h3>
-            
-            <div class="glass rounded-2xl p-8 reveal">
-                <p class="text-gray-300 leading-relaxed mb-6 text-lg">
-                    Olá! Sou o Rodrigo, Engenheiro de Software e Elétrica com uma trajetória que une 
-                    infraestrutura de grande porte e inovação tecnológica. Minha carreira começou na 
-                    gestão de projetos rodoviários — incluindo trechos estratégicos como a BR-101, 
-                    Via Dutra e Rio-Santos — onde desenvolvi habilidades cruciais em gestão de crises, 
-                    liderança de equipes multidisciplinares e entrega de resultados sob pressão.
-                </p>
-                <p class="text-gray-300 leading-relaxed mb-6">
-                    Paralelamente, minha paixão por tecnologia me levou a mergulhar no mundo da 
-                    Inteligência Artificial. Em 2022, transformei essa paixão em realidade criando a 
-                    <strong class="text-purple-400">Yiellem I.A</strong> — uma assistente conversacional 
-                    que integra múltiplos modelos de linguagem (GPT, Bing) para oferecer respostas 
-                    precisas em qualquer idioma, especialmente sobre temas brasileiros.
-                </p>
-                <p class="text-gray-300 leading-relaxed mb-6">
-                    O que me move é a capacidade de <span class="text-indigo-400">unir visão estratégica 
-                    com execução técnica</span>. Seja gerenciando a entrega de 5km de pista duplicada 
-                    na Serra do Mar, seja arquitetando uma API de IA que processa milhares de mensagens 
-                    diárias: eu entrego resultados que geram impacto real.
-                </p>
-                <p class="text-gray-300 leading-relaxed">
-                    Minha base é sólida: certificações em Cybersecurity (Fortinet), Redes (Cisco CCNA), 
-                    Metodologias Ágeis (Scrum Professional) e IA (OpenAI). Mas mais importante que 
-                    certificações é a minha mentalidade: <span class="text-green-400">aprender rápido, 
-                    adaptar-se constantemente e resolver problemas</span>.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experiência Section -->
-    <section id="experiencia" class="py-20 px-6">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">EXPERIÊNCIA</h2>
-            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">Onde já trabalhei</h3>
-            
-            <div class="space-y-8">
-                <!-- Timeline Item 1 -->
-                <div class="glass rounded-2xl p-6 reveal">
-                    <div class="timeline-item">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                            <div>
-                                <h4 class="text-lg font-semibold text-white">Gestão de Projetos & Infraestrutura</h4>
-                                <p class="text-gray-400">Estradas e Rodovias (BR-101, Via Dutra, Rio-Santos)</p>
-                            </div>
-                            <span class="text-sm text-gray-500 mt-2 md:mt-0">2021 — Presente</span>
-                        </div>
-                        <p class="text-gray-300 text-sm">
-                            Atuação em projetos de infraestrutura rodoviária de grande porte, 
-                            incluindo entregas estratégicas como duplicação de pistas na Serra do Mar 
-                            e gestão de operações em vias primárias do Rio de Janeiro.
-                        </p>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="skill-tag">Gestão de Projetos</span>
-                            <span class="skill-tag">Infraestrutura</span>
-                            <span class="skill-tag">Operações</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Timeline Item 2 -->
-                <div class="glass rounded-2xl p-6 reveal">
-                    <div class="timeline-item">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                            <div>
-                                <h4 class="text-lg font-semibold text-white">Projetos de Automação</h4>
-                                <p class="text-gray-400">Engenharia Elétrica & Software</p>
-                            </div>
-                            <span class="text-sm text-color-500 mt-2 md:mt-0">2019 — Presente</span>
-                        </div>
-                        <p class="text-gray-300 text-sm">
-                            Desenvolvimento de soluções automatizadas para otimização de processos, 
-                            integração de sistemas e implementação de tecnologias emergentes.
-                        </p>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="skill-tag">Automação</span>
-                            <span class="skill-tag">Integração de Sistemas</span>
-                            <span class="skill-tag">IoT</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projetos Section -->
-    <section id="projetos" class="py-20 px-6">
+    <!-- About Section -->
+    <section id="sobre" class="py-32 px-6">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">PORTFÓLIO</h2>
-            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">Projetos que demonstram<br>minha capacidade de entrega</h3>
-            
-            <div class="grid gap-8">
-                <!-- Projeto 1: Yiellem I.A -->
-                <div class="project-card reveal">
-                    <div class="flex flex-col md:flex-row md:items-start gap-6">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl">
-                                    🤖
-                                </div>
-                                <div>
-                                    <h4 class="text-2xl font-bold text-gradient">Yiellem I.A</h4>
-                                    <span class="text-sm text-gray-500">2022 — Presente | Sistema em Produção</span>
-                                </div>
-                            </div>
-                            
-                            <p class="text-gray-300 mb-4 leading-relaxed">
-                                Assistente de inteligência artificial via WhatsApp desenvolvida 
-                                para democratizar o acesso a IA no Brasil. O sistema integra 
-                                múltiplos modelos de linguagem (GPT-4, Bing) em uma arquitetura 
-                                que processa mensagens em tempo real, oferecendo respostas 
-                                contextualizadas sobre temas nacionais em qualquer idioma.
-                            </p>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-400 text-sm mb-2"><strong>Desafios superados:</strong></p>
-                                <ul class="text-gray-300 text-sm space-y-2">
-                                    <li>• <span class="text-indigo-400">Integração multi-API:</span> Arquitetura que alterna entre provedores de IA para otimizar custos e performance</li>
-                                    <li>• <span class="text-indigo-400">Processamento de linguagem natural:</span> Sistema de contexto que mantém conversas coerentes mesmo em trocas longas</li>
-                                    <li>• <span class="text-indigo-400">Infraestrutura escalável:</span> Deploy com containerização para suportar picos de demanda</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-2">
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">OpenAI API</span>
-                                <span class="skill-tag">WhatsApp Business API</span>
-                                <span class="skill-tag">Machine Learning</span>
-                                <span class="skill-tag">NLP</span>
-                                <span class="skill-tag">Docker</span>
-                            </div>
-                        </div>
-                        
-                        <div class="md:w-56 flex flex-col gap-3">
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-green-400 mb-1">✓</div>
-                                <div class="text-sm text-gray-400">Operacional 24/7</div>
-                            </div>
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-indigo-400 mb-1">🌐</div>
-                                <div class="text-sm text-gray-400">Multi-idioma</div>
-                            </div>
-                        </div>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <!-- Content -->
+                <div class="reveal">
+                    <span class="text-neon-cyan font-mono text-sm tracking-widest">SOBRE MIM</span>
+                    <h2 class="font-space font-bold text-4xl md:text-5xl mt-4 mb-8">
+                        Unindo <span class="neon-text">visão estratégica</span> com 
+                        <span class="neon-text">execução técnica</span>
+                    </h2>
+                    
+                    <div class="space-y-6 text-gray-300 text-lg leading-relaxed">
+                        <p>
+                            Minha trajetória une dois mundos aparentemente distintos: 
+                            <span class="text-neon-cyan">infraestrutura de grande porte</span> e 
+                            <span class="text-neon-purple">inovação tecnológica</span>.
+                        </p>
+                        <p>
+                            Comecei gerenciando projetos rodoviários estratégicos — BR-101, Via Dutra, 
+                            Rio-Santos — onde desenvolvi habilidades cruciais em 
+                            <span class="text-neon-pink">gestão de crises</span> e 
+                            <span class="text-neon-pink">liderança multidisciplinar</span>.
+                        </p>
+                        <p>
+                            Em 2022, transformei minha paixão por IA na 
+                            <span class="text-neon-cyan font-semibold">Yiellem I.A</span> — 
+                            uma assistente conversacional que integra múltiplos modelos de linguagem 
+                            para oferecer respostas precisas em qualquer idioma.
+                        </p>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <span class="skill-orb px-4 py-2 rounded-full text-sm">Python</span>
+                        <span class="skill-orb px-4 py-2 rounded-full text-sm">Machine Learning</span>
+                        <span class="skill-orb px-4 py-2 rounded-full text-sm">APIs REST</span>
+                        <span class="skill-orb px-4 py-2 rounded-full text-sm">Cloud</span>
+                        <span class="skill-orb px-4 py-2 rounded-full text-sm">Cybersecurity</span>
                     </div>
                 </div>
 
-                <!-- Projeto 2: Monitoramento Rodoviário IoT -->
-                <div class="project-card reveal">
-                    <div class="flex flex-col md:flex-row md:items-start gap-6">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-2xl">
-                                    🛣️
-                                </div>
-                                <div>
-                                    <h4 class="text-2xl font-bold text-gradient">SmartRoad Analytics</h4>
-                                    <span class="text-sm text-gray-500">2023 | Sistema de Monitoramento IoT</span>
-                                </div>
-                            </div>
-                            
-                            <p class="text-gray-300 mb-4 leading-relaxed">
-                                Plataforma integrada de monitoramento de vias utilizando sensores IoT 
-                                para coleta de dados em tempo real. O sistema processa informações 
-                                de tráfego, condições meteorológicas e estado da pavimentação, 
-                                gerando alertas automáticos para equipes de manutenção.
-                            </p>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-400 text-sm mb-2"><strong>Impacto gerado:</strong></p>
-                                <ul class="text-gray-300 text-sm space-y-2">
-                                    <li>• <span class="text-green-400">Redução de 30%</span> no tempo de resposta a incidentes via alertas em tempo real</li>
-                                    <li>• <span class="text-green-400">Dashboard centralizado</span> com visualização geoespacial de toda a malha rodoviária</li>
-                                    <li>• <span class="text-green-400">Predição de manutenção</span> usando análise de dados históricos para prevenção de falhas</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-2">
-                                <span class="skill-tag">IoT</span>
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">MQTT</span>
-                                <span class="skill-tag">PostgreSQL</span>
-                                <span class="skill-tag">Grafana</span>
-                                <span class="skill-tag">ESP32</span>
-                            </div>
-                        </div>
+                <!-- Visual -->
+                <div class="reveal relative">
+                    <div class="relative aspect-square max-w-md mx-auto">
+                        <!-- Orbital Rings -->
+                        <div class="absolute inset-0 border border-neon-cyan/20 rounded-full animate-spin-slow"></div>
+                        <div class="absolute inset-4 border border-neon-purple/20 rounded-full animate-spin-slow" style="animation-direction: reverse; animation-duration: 30s;"></div>
+                        <div class="absolute inset-8 border border-neon-pink/20 rounded-full animate-spin-slow" style="animation-duration: 40s;"></div>
                         
-                        <div class="md:w-56 flex flex-col gap-3">
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-green-400 mb-1">30%</div>
-                                <div class="text-sm text-gray-400">Redução de Incidentes</div>
-                            </div>
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-teal-400 mb-1">IoT</div>
-                                <div class="text-sm text-gray-400">Sensores em Campo</div>
+                        <!-- Center Content -->
+                        <div class="absolute inset-16 rounded-2xl bg-gradient-to-br from-neon-purple/20 to-neon-cyan/20 backdrop-blur-xl border border-white/10 flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="brain-circuit" class="w-16 h-16 text-neon-cyan mx-auto mb-4"></i>
+                                <span class="font-space font-bold text-2xl neon-text">YIELLEM</span>
+                                <span class="block text-sm text-gray-400 mt-2">I.A</span>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Projeto 3: Automação Infra Cloud -->
-                <div class="project-card reveal">
-                    <div class="flex flex-col md:flex-row md:items-start gap-6">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-2xl">
-                                    ☁️
-                                </div>
-                                <div>
-                                    <h4 class="text-2xl font-bold text-gradient">InfraCLI</h4>
-                                    <span class="text-sm text-gray-500">2024 | Automação de Infraestrutura Cloud</span>
-                                </div>
-                            </div>
-                            
-                            <p class="text-gray-300 mb-4 leading-relaxed">
-                                Ferramenta CLI open-source para provisionamento automático de ambientes 
-                                cloud. Desenvolvida para padronizar deploys e reduzir tempo de setup 
-                                de infraestrutura de dias para minutos. Suporta AWS, Azure e Google Cloud.
-                            </p>
-                            
-                            <div class="mb-4">
-                                <p class="text-gray-400 text-sm mb-2"><strong>Características técnicas:</strong></p>
-                                <ul class="text-gray-300 text-sm space-y-2">
-                                    <li>• <span class="text-blue-400">Infrastructure as Code (IaC)</span> usando templates parametrizáveis em YAML</li>
-                                    <li>• <span class="text-blue-400">Multi-cloud:</span> Abstração de APIs para deploy simultâneo em diferentes provedores</li>
-                                    <li>• <span class="text-blue-400">CLI intuitiva:</span> Interface inspirada em ferramentas modernas (Vercel, Netlify)</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-2">
-                                <span class="skill-tag">Go</span>
-                                <span class="skill-tag">Terraform</span>
-                                <span class="skill-tag">AWS</span>
-                                <span class="skill-tag">Azure</span>
-                                <span class="skill-tag">Docker</span>
-                                <span class="skill-tag">CI/CD</span>
-                            </div>
+                        <!-- Floating Icons -->
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-12 rounded-xl bg-neon-purple/20 backdrop-blur border border-neon-purple/30 flex items-center justify-center float-element">
+                            <i data-lucide="code-2" class="w-6 h-6 text-neon-purple"></i>
                         </div>
-                        
-                        <div class="md:w-56 flex flex-col gap-3">
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-blue-400 mb-1">Open</div>
-                                <div class="text-sm text-gray-400">Source</div>
-                            </div>
-                            <div class="glass rounded-xl p-4 text-center">
-                                <div class="text-2xl font-bold text-cyan-400 mb-1">3x</div>
-                                <div class="text-sm text-gray-400">+ Rápido Setup</div>
-                            </div>
+                        <div class="absolute top-1/2 -right-4 -translate-y-1/2 w-12 h-12 rounded-xl bg-neon-cyan/20 backdrop-blur border border-neon-cyan/30 flex items-center justify-center float-element" style="animation-delay: -2s;">
+                            <i data-lucide="cpu" class="w-6 h-6 text-neon-cyan"></i>
+                        </div>
+                        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-12 h-12 rounded-xl bg-neon-pink/20 backdrop-blur border border-neon-pink/30 flex items-center justify-center float-element" style="animation-delay: -4s;">
+                            <i data-lucide="bot" class="w-6 h-6 text-neon-pink"></i>
                         </div>
                     </div>
                 </div>
@@ -639,94 +579,205 @@
         </div>
     </section>
 
-    <!-- Certificações Section -->
-    <section id="certificacoes" class="py-20 px-6">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">CERTIFICAÇÕES</h2>
-            <h3 class="text-3xl md:text-4xl font-bold mb-12 reveal">Aprendizado contínuo</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cert 1 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
-                            <i class="fas fa-brain"></i>
+    <!-- Experience Section -->
+    <section id="experiencia" class="py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-sm tracking-widest">EXPERIÊNCIA</span>
+                <h2 class="font-space font-bold text-4xl md:text-5xl mt-4">
+                    Onde deixei minha <span class="neon-text">marca</span>
+                </h2>
+            </div>
+
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="timeline-line absolute left-8 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5"></div>
+
+                <!-- Timeline Items -->
+                <div class="space-y-12">
+                    <!-- Item 1 -->
+                    <div class="reveal relative grid md:grid-cols-2 gap-8 items-center">
+                        <div class="md:text-right md:pr-12">
+                            <div class="holo-card rounded-2xl p-6 inline-block text-left" data-cursor-hover>
+                                <span class="text-neon-cyan font-mono text-sm">2021 — Presente</span>
+                                <h3 class="font-space font-bold text-xl mt-2 mb-2">Gestão de Projetos & Infraestrutura</h3>
+                                <p class="text-gray-400 text-sm mb-4">Estradas e Rodovias (BR-101, Via Dutra, Rio-Santos)</p>
+                                <p class="text-gray-300 text-sm mb-4">
+                                    Atuação em projetos de infraestrutura rodoviária de grande porte, 
+                                    incluindo entregas estratégicas como duplicação de pistas na Serra do Mar.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs px-3 py-1 rounded-full bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30">Gestão</span>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-neon-purple/10 text-neon-purple border border-neon-purple/30">Infraestrutura</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">IA</h4>
-                            <p class="text-sm text-gray-400">OpenAI</p>
-                            <p class="text-xs text-gray-500 mt-1">2024 — 2029</p>
+                        <div class="hidden md:block"></div>
+                        <div class="timeline-dot absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full"></div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="reveal relative grid md:grid-cols-2 gap-8 items-center">
+                        <div class="hidden md:block"></div>
+                        <div class="md:pl-12">
+                            <div class="holo-card rounded-2xl p-6" data-cursor-hover>
+                                <span class="text-neon-purple font-mono text-sm">2019 — Presente</span>
+                                <h3 class="font-space font-bold text-xl mt-2 mb-2">Projetos de Automação</h3>
+                                <p class="text-gray-400 text-sm mb-4">Engenharia Elétrica & Software</p>
+                                <p class="text-gray-300 text-sm mb-4">
+                                    Desenvolvimento de soluções automatizadas para otimização de processos, 
+                                    integração de sistemas e implementação de tecnologias emergentes.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs px-3 py-1 rounded-full bg-neon-pink/10 text-neon-pink border border-neon-pink/30">Automação</span>
+                                    <span class="text-xs px-3 py-1 rounded-full bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30">IoT</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-dot absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projetos" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-sm tracking-widest">PORTFÓLIO</span>
+                <h2 class="font-space font-bold text-4xl md:text-5xl mt-4">
+                    Projetos que <span class="neon-text">geram impacto</span>
+                </h2>
+            </div>
+
+            <!-- Yiellem I.A - Featured -->
+            <div class="reveal mb-16">
+                <div class="holo-card rounded-3xl p-8 md:p-12 relative overflow-hidden" data-cursor-hover>
+                    <!-- Background Glow -->
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-neon-purple/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                    
+                    <div class="relative grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-purple to-neon-pink flex items-center justify-center">
+                                    <i data-lucide="bot" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-space font-bold text-3xl neon-text">Yiellem I.A</h3>
+                                    <span class="text-green-400 text-sm flex items-center gap-2">
+                                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                        Sistema em Produção desde 2022
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                                Assistente de inteligência artificial via WhatsApp desenvolvida para 
+                                democratizar o acesso a IA no Brasil. Integra múltiplos modelos de 
+                                linguagem (GPT-4, Bing) em uma arquitetura que processa mensagens em 
+                                tempo real.
+                            </p>
+
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neon-cyan flex-shrink-0 mt-0.5"></i>
+                                    <span class="text-gray-300">Arquitetura multi-API para otimizar custos e performance</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neon-cyan flex-shrink-0 mt-0.5"></i>
+                                    <span class="text-gray-300">Sistema de contexto para conversas coerentes</span>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neon-cyan flex-shrink-0 mt-0.5"></i>
+                                    <span class="text-gray-300">Infraestrutura escalável com containerização</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2">
+                                <span class="skill-orb px-4 py-2 rounded-full text-sm">Python</span>
+                                <span class="skill-orb px-4 py-2 rounded-full text-sm">OpenAI API</span>
+                                <span class="skill-orb px-4 py-2 rounded-full text-sm">WhatsApp API</span>
+                                <span class="skill-orb px-4 py-2 rounded-full text-sm">NLP</span>
+                                <span class="skill-orb px-4 py-2 rounded-full text-sm">Docker</span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <!-- Chat Preview -->
+                            <div class="bg-gray-900/80 backdrop-blur-xl rounded-2xl border border-white/10 p-6 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                                <div class="flex items-center gap-3 mb-4 pb-4 border-b border-white/10">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-purple to-neon-pink flex items-center justify-center text-lg">🤖</div>
+                                    <div>
+                                        <div class="font-semibold text-white">Yiellem I.A</div>
+                                        <div class="text-xs text-green-400 flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                                            Online
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="bg-white/5 rounded-lg rounded-tl-none p-3 text-sm text-gray-300 max-w-[80%]">
+                                        Olá! Sou a Yiellem. Como posso ajudar você hoje?
+                                    </div>
+                                    <div class="bg-neon-purple/20 rounded-lg rounded-tr-none p-3 text-sm text-white max-w-[80%] ml-auto border border-neon-purple/30">
+                                        Preciso de informações sobre engenharia de software no Brasil
+                                    </div>
+                                    <div class="bg-white/5 rounded-lg rounded-tl-none p-3 text-sm text-gray-300 max-w-[80%]">
+                                        Ótimo tema! No Brasil, a engenharia de software está em alta. Posso te contar sobre salários, mercado, tecnologias em demanda...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Stats -->
+                            <div class="absolute -bottom-4 -left-4 holo-card rounded-xl p-4" data-cursor-hover>
+                                <div class="text-2xl font-bold neon-text">24/7</div>
+                                <div class="text-xs text-gray-400">Operação</div>
+                            </div>
+                            <div class="absolute -top-4 -right-4 holo-card rounded-xl p-4" data-cursor-hover>
+                                <div class="text-2xl font-bold neon-text">∞</div>
+                                <div class="text-xs text-gray-400">Idiomas</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Cert 2 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.05s">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">Cyber Security</h4>
-                            <p class="text-sm text-gray-400">Fortinet</p>
-                            <p class="text-xs text-gray-500 mt-1">2022 — 2029</p>
-                        </div>
+            <!-- Other Projects Grid -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Project 2 -->
+                <div class="reveal holo-card rounded-3xl p-8" data-cursor-hover>
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center mb-6">
+                        <i data-lucide="road" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h3 class="font-space font-bold text-2xl mb-3">SmartRoad Analytics</h3>
+                    <p class="text-gray-400 text-sm mb-4">2023 | Sistema de Monitoramento IoT</p>
+                    <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+                        Plataforma integrada de monitoramento de vias utilizando sensores IoT 
+                        para coleta de dados em tempo real. Redução de 30% no tempo de resposta a incidentes.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">IoT</span>
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">MQTT</span>
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">Grafana</span>
                     </div>
                 </div>
 
-                <!-- Cert 3 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.1s">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400">
-                            <i class="fas fa-sync"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">Certified Scrum Professional</h4>
-                            <p class="text-sm text-gray-400">CertiProf</p>
-                            <p class="text-xs text-gray-500 mt-1">2023 — 2033</p>
-                        </div>
+                <!-- Project 3 -->
+                <div class="reveal holo-card rounded-3xl p-8" data-cursor-hover>
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center mb-6">
+                        <i data-lucide="cloud" class="w-7 h-7 text-white"></i>
                     </div>
-                </div>
-
-                <!-- Cert 4 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.15s">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
-                            <i class="fas fa-wifi"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">CCNA Wireless</h4>
-                            <p class="text-sm text-gray-400">Cisco</p>
-                            <p class="text-xs text-gray-500 mt-1">2019 — 2030</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cert 5 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.2s">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
-                            <i class="fas fa-microsoft"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">Office Specialist: Expert</h4>
-                            <p class="text-sm text-gray-400">Microsoft</p>
-                            <p class="text-xs text-gray-500 mt-1">2008 — 2034</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cert 6 -->
-                <div class="glass glass-hover rounded-xl p-5 reveal" style="transition-delay: 0.25s">
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
-                            <i class="fas fa-bullseye"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white">Google Ads</h4>
-                            <p class="text-sm text-gray-400">Google</p>
-                            <p class="text-xs text-gray-500 mt-1">2022 — 2029</p>
-                        </div>
+                    <h3 class="font-space font-bold text-2xl mb-3">InfraCLI</h3>
+                    <p class="text-gray-400 text-sm mb-4">2024 | Automação Cloud</p>
+                    <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+                        Ferramenta CLI open-source para provisionamento automático de ambientes 
+                        cloud. Reduz setup de infraestrutura de dias para minutos.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">Go</span>
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">Terraform</span>
+                        <span class="skill-orb px-3 py-1 rounded-full text-xs">AWS</span>
                     </div>
                 </div>
             </div>
@@ -734,348 +785,450 @@
     </section>
 
     <!-- Skills Section -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-8 reveal">Tech Stack</h2>
-            
-            <div class="glass rounded-2xl p-8 reveal">
-                <div class="flex flex-wrap justify-center gap-3">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">Inteligência Artificial</span>
-                    <span class="skill-tag">Machine Learning</span>
-                    <span class="skill-tag">APIs REST</span>
-                    <span class="skill-tag">Automação</span>
-                    <span class="skill-tag">NLP</span>
-                    <span class="skill-tag">Cloud Computing</span>
-                    <span class="skill-tag">Cybersecurity</span>
-                    <span class="skill-tag">Scrum</span>
-                    <span class="skill-tag">Gestão de Projetos</span>
-                    <span class="skill-tag">Infraestrutura</span>
-                    <span class="skill-tag">Redes</span>
-                    <span class="skill-tag">Linux</span>
-                    <span class="skill-tag">Docker</span>
+    <section id="skills" class="py-32 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-sm tracking-widest">TECH STACK</span>
+                <h2 class="font-space font-bold text-4xl md:text-5xl mt-4">
+                    Minha <span class="neon-text">caixa de ferramentas</span>
+                </h2>
+            </div>
+
+            <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Skill Cards -->
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="brain" class="w-10 h-10 text-neon-purple mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Inteligência Artificial</h4>
+                    <p class="text-xs text-gray-400">Machine Learning, NLP, APIs LLM</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="code-2" class="w-10 h-10 text-neon-cyan mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Desenvolvimento</h4>
+                    <p class="text-xs text-gray-400">Python, Go, APIs REST, Web</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="cloud" class="w-10 h-10 text-neon-pink mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Cloud & Infra</h4>
+                    <p class="text-xs text-gray-400">AWS, Azure, Docker, Terraform</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="shield" class="w-10 h-10 text-green-400 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Cybersecurity</h4>
+                    <p class="text-xs text-gray-400">Fortinet, Redes, Proteção</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="zap" class="w-10 h-10 text-yellow-400 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Automação</h4>
+                    <p class="text-xs text-gray-400">IoT, Scripts, Integração</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="kanban" class="w-10 h-10 text-orange-400 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Gestão Ágil</h4>
+                    <p class="text-xs text-gray-400">Scrum, Projetos, Liderança</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="network" class="w-10 h-10 text-blue-400 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Redes</h4>
+                    <p class="text-xs text-gray-400">CCNA, Infraestrutura, Wireless</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6 text-center group" data-cursor-hover>
+                    <i data-lucide="database" class="w-10 h-10 text-purple-400 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-semibold text-white mb-2">Dados</h4>
+                    <p class="text-xs text-gray-400">PostgreSQL, Analytics, Dashboards</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contato Section -->
-    <section id="contato" class="py-20 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-sm font-semibold text-indigo-400 mb-2 mono">CONTATO</h2>
-            <h3 class="text-3xl md:text-4xl font-bold mb-8 reveal">Vamos conversar?</h3>
-            
-            <p class="text-gray-400 mb-8 reveal">
-                Sempre aberto a discutir projetos de IA, automação ou oportunidades de colaboração.
-            </p>
-            
-            <div class="glass rounded-2xl p-8 reveal">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" 
-                       class="glass glass-hover rounded-xl p-6 flex items-center gap-4 text-left group">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
-                            <i class="fab fa-linkedin text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-semibold text-white">LinkedIn</div>
-                            <div class="text-sm text-gray-400">/in/rodrigo-alves</div>
-                        </div>
-                    </a>
-                    
-                    <a href="mailto:rodrigo@asia.com" 
-                       class="glass glass-hover rounded-xl p-6 flex items-center gap-4 text-left group">
-                        <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500 group-hover:text-white transition-all">
-                            <i class="fas fa-envelope text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-semibold text-white">Email</div>
-                            <div class="text-sm text-gray-400">rodrigo@asia.com</div>
-                        </div>
-                    </a>
+    <!-- Certifications -->
+    <section class="py-32 px-6 bg-gradient-to-b from-transparent via-neon-purple/5 to-transparent">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-sm tracking-widest">CERTIFICAÇÕES</span>
+                <h2 class="font-space font-bold text-4xl md:text-5xl mt-4">
+                    Aprendizado <span class="neon-text">contínuo</span>
+                </h2>
+            </div>
+
+            <div class="reveal grid md:grid-cols-3 gap-6">
+                <div class="holo-card rounded-2xl p-6" data-cursor-hover>
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="brain-circuit" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-1">Inteligência Artificial</h4>
+                    <p class="text-sm text-gray-400">OpenAI</p>
+                    <p class="text-xs text-gray-500 mt-2">2024 — 2029</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6" data-cursor-hover>
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-orange-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-1">Cyber Security</h4>
+                    <p class="text-sm text-gray-400">Fortinet</p>
+                    <p class="text-xs text-gray-500 mt-2">2022 — 2029</p>
+                </div>
+
+                <div class="holo-card rounded-2xl p-6" data-cursor-hover>
+                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="refresh-cw" class="w-6 h-6 text-green-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-1">Scrum Professional</h4>
+                    <p class="text-sm text-gray-400">CertiProf</p>
+                    <p class="text-xs text-gray-500 mt-2">2023 — 2033</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-32 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal holo-card rounded-3xl p-12 text-center relative overflow-hidden" data-cursor-hover>
+                <!-- Background Effect -->
+                <div class="absolute inset-0 bg-gradient-to-br from-neon-purple/10 via-transparent to-neon-cyan/10"></div>
+                
+                <div class="relative z-10">
+                    <span class="text-neon-cyan font-mono text-sm tracking-widest">CONTATO</span>
+                    <h2 class="font-space font-bold text-4xl md:text-5xl mt-4 mb-6">
+                        Vamos criar algo <span class="neon-text">incrível</span>?
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
+                        Sempre aberto a discutir projetos de IA, automação ou oportunidades de colaboração. 
+                        Transforme sua visão em realidade.
+                    </p>
+
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" 
+                           class="group flex items-center gap-4 holo-card rounded-2xl px-8 py-6 hover:border-neon-cyan/50 transition-colors" data-cursor-hover>
+                            <div class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all">
+                                <i data-lucide="linkedin" class="w-7 h-7 text-blue-400 group-hover:text-white"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold text-white">LinkedIn</div>
+                                <div class="text-sm text-gray-400">/in/rodrigo-alves</div>
+                            </div>
+                        </a>
+
+                        <a href="mailto:rodrigo@asia.com" 
+                           class="group flex items-center gap-4 holo-card rounded-2xl px-8 py-6 hover:border-neon-purple/50 transition-colors" data-cursor-hover>
+                            <div class="w-14 h-14 rounded-xl bg-neon-purple/20 flex items-center justify-center group-hover:bg-neon-purple group-hover:text-white transition-all">
+                                <i data-lucide="mail" class="w-7 h-7 text-neon-purple group-hover:text-white"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold text-white">Email</div>
+                                <div class="text-sm text-gray-400">rodrigo@asia.com</div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-8 px-6 border-t border-white/5">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="text-gray-500 text-sm">
-                © 2025 Rodrigo Alves. Construído com código & café.
+    <footer class="py-12 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <span class="font-space font-bold text-xl neon-text">RA</span>
+                <span class="text-gray-500">|</span>
+                <span class="text-gray-400 text-sm">Engenheiro de Software & IA</span>
             </div>
-            <div class="flex gap-6">
-                <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" class="text-gray-400 hover:text-white transition-colors">
-                    <i class="fab fa-linkedin text-xl"></i>
+            
+            <div class="text-gray-500 text-sm">
+                © 2025 Rodrigo Alves. Construído com código & café ☕
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="https://www.linkedin.com/in/rodrigo-alves/" target="_blank" class="text-gray-400 hover:text-neon-cyan transition-colors" data-cursor-hover>
+                    <i data-lucide="linkedin" class="w-5 h-5"></i>
                 </a>
-                <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                    <i class="fab fa-github text-xl"></i>
+                <a href="https://github.com/cabrum" target="_blank" class="text-gray-400 hover:text-white transition-colors" data-cursor-hover>
+                    <i data-lucide="github" class="w-5 h-5"></i>
                 </a>
             </div>
         </div>
     </footer>
 
-    <!-- AI Chat Widget -->
-    <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
-        <!-- Chat Button -->
-        <button id="chat-toggle" class="w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg hover:shadow-indigo-500/50 transition-all flex items-center justify-center text-white text-2xl relative group">
-            <span id="chat-icon">💬</span>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></span>
-            <div class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                Converse com minha IA!
-            </div>
-        </button>
-
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-96 h-[500px] bg-gray-900/95 backdrop-blur-xl rounded-2xl border border-indigo-500/30 shadow-2xl flex flex-col overflow-hidden">
-            <!-- Chat Header -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
-                        🤖
-                    </div>
-                    <div>
-                        <div class="font-semibold text-white">Assistente Virtual</div>
-                        <div class="text-xs text-indigo-200">Conheça o Rodrigo</div>
-                    </div>
-                </div>
-                <button id="chat-close" class="text-white/70 hover:text-white transition-colors">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-
-            <!-- Chat Messages -->
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
-                <!-- Welcome Message -->
-                <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-sm flex-shrink-0">🤖</div>
-                    <div class="bg-gray-800/50 rounded-2xl rounded-tl-none px-4 py-3 max-w-[80%]">
-                        <p class="text-sm text-gray-200">
-                            Olá! Sou o assistente virtual do Rodrigo. Estou aqui para mostrar por que ele é o candidato ideal para sua vaga. Pergunte sobre:
-                        </p>
-                        <ul class="text-xs text-gray-400 mt-2 space-y-1">
-                            <li>• Experiência com IA e automação</li>
-                            <li>• Gestão de projetos de infraestrutura</li>
-                            <li>• Habilidades técnicas específicas</li>
-                            <li>• Por que contratar o Rodrigo?</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="p-4 border-t border-gray-700/50">
-                <div class="flex gap-2">
-                    <input id="chat-input" type="text" placeholder="Digite sua pergunta..." 
-                        class="flex-1 bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors">
-                    <button id="chat-send" class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl px-4 text-white hover:shadow-lg hover:shadow-indigo-500/30 transition-all">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                <div class="text-xs text-gray-500 mt-2 text-center">
-                    Powered by Gemini API
-                    <span id="api-status" class="text-red-400 ml-1">• API não configurada</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Scroll Reveal Animation
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursorFollower');
+        const hoverElements = document.querySelectorAll('[data-cursor-hover]');
+
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            // Smooth cursor movement
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+
+            cursor.style.left = cursorX - cursor.offsetWidth / 2 + 'px';
+            cursor.style.top = cursorY - cursor.offsetHeight / 2 + 'px';
+            cursorFollower.style.left = followerX - cursorFollower.offsetWidth / 2 + 'px';
+            cursorFollower.style.top = followerY - cursorFollower.offsetHeight / 2 + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        // Check for touch device
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            animateCursor();
+        }
+
+        // Hover effects
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Three.js Particles
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('particles-canvas'),
+            alpha: true,
+            antialias: true
+        });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 800;
+        const posArray = new Float32Array(particlesCount * 3);
+        const velocityArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+            posArray[i + 1] = (Math.random() - 0.5) * 50;
+            posArray[i + 2] = (Math.random() - 0.5) * 50;
+            
+            velocityArray[i] = (Math.random() - 0.5) * 0.02;
+            velocityArray[i + 1] = (Math.random() - 0.5) * 0.02;
+            velocityArray[i + 2] = (Math.random() - 0.5) * 0.02;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0x00f5ff,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Add connection lines
+        const linesGeometry = new THREE.BufferGeometry();
+        const linesMaterial = new THREE.LineBasicMaterial({
+            color: 0xb026ff,
+            transparent: true,
+            opacity: 0.1
+        });
+
+        camera.position.z = 15;
+
+        let mousePos = { x: 0, y: 0 };
+        document.addEventListener('mousemove', (e) => {
+            mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+
+            const positions = particlesGeometry.attributes.position.array;
+            const time = Date.now() * 0.0005;
+
+            // Update particle positions
+            for (let i = 0; i < particlesCount * 3; i += 3) {
+                positions[i] += velocityArray[i] + Math.sin(time + i) * 0.001;
+                positions[i + 1] += velocityArray[i + 1] + Math.cos(time + i) * 0.001;
+                positions[i + 2] += velocityArray[i + 2];
+
+                // Wrap around
+                if (Math.abs(positions[i]) > 25) positions[i] *= -0.9;
+                if (Math.abs(positions[i + 1]) > 25) positions[i + 1] *= -0.9;
+                if (Math.abs(positions[i + 2]) > 25) positions[i + 2] *= -0.9;
+
+                // Mouse interaction
+                const dx = positions[i] - mousePos.x * 10;
+                const dy = positions[i + 1] - mousePos.y * 10;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 3) {
+                    positions[i] += dx * 0.01;
+                    positions[i + 1] += dy * 0.01;
                 }
+            }
+
+            particlesGeometry.attributes.position.needsUpdate = true;
+            
+            // Rotate entire system slowly
+            particlesMesh.rotation.y = time * 0.1;
+            particlesMesh.rotation.x = time * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        animateParticles();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // GSAP Scroll Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Reveal animations
+        gsap.utils.toArray('.reveal').forEach((element) => {
+            gsap.fromTo(element, 
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+
+        // Scroll Progress
+        const scrollProgress = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = scrollTop / docHeight;
+            scrollProgress.style.transform = `scaleX(${scrollPercent})`;
+        });
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
             });
-        }, observerOptions);
+        });
 
-        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-
-        // Smooth scroll for navigation links
+        // Smooth scroll for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    gsap.to(window, {
+                        duration: 1,
+                        scrollTo: { y: target, offsetY: 80 },
+                        ease: 'power3.inOut'
                     });
                 }
             });
         });
 
-        // Terminal typing effect enhancement
-        const terminalLines = document.querySelectorAll('.terminal-line');
-        terminalLines.forEach((line, index) => {
-            line.style.animationDelay = `${index * 0.6}s`;
+        // Glitch effect on hover
+        const glitchElements = document.querySelectorAll('.glitch');
+        glitchElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.style.animationDuration = '0.1s';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.animationDuration = '2s';
+            });
         });
 
-        // AI Chat Widget - CONFIGURE SUA API KEY AQUI
-        const GEMINI_API_KEY = 'AIzaSyAs8oWF9gtMwGv7iJB1RBFjI_rexlIO2B8'; // Chave configurada
-        const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-
-        // System prompt para fazer a IA "vender" o Rodrigo
-        const SYSTEM_PROMPT = `Você é um assistente virtual do portfólio de Rodrigo Alves, Engenheiro de Software e Especialista em IA. 
-Sua missão é convencer recrutadores e gestores de que Rodrigo é o candidato IDEAL para a vaga.
-
-PERFIL DO RODRIGO:
-- Engenheiro de Software e Elétrica
-- Especialista em IA & Automação
-- Criador do Yiellem I.A (assistente WhatsApp multi-idioma desde 2022)
-- Experiência em gestão de projetos de infraestrutura (BR-101, Via Dutra, Rio-Santos)
-- Certificações: Scrum Professional, Cybersecurity Fortinet, CCNA Cisco, IA OpenAI
-- Domínio de Python, APIs, Machine Learning, Cloud Computing
-
-COMPORTAMENTO:
-1. Seja entusiasta, profissional e persuasivo
-2. Destaque sempre como as skills dele SOLUCIONAM problemas reais
-3. Seja específico: cite projetos, tecnologias, resultados concretos
-4. Antecipe objeções e mostre como ele supera desafios
-5. Termine convidando para uma conversa/rodrigo@asia.com
-
-NUNCA diga "não sei" - sempre conecte a pergunta ao valor que Rodrigo entrega.`;
-
-        // Chat Widget Elements
-        const chatToggle = document.getElementById('chat-toggle');
-        const chatWindow = document.getElementById('chat-window');
-        const chatClose = document.getElementById('chat-close');
-        const chatInput = document.getElementById('chat-input');
-        const chatSend = document.getElementById('chat-send');
-        const chatMessages = document.getElementById('chat-messages');
-        const apiStatus = document.getElementById('api-status');
-
-        // Toggle chat
-        chatToggle.addEventListener('click', () => {
-            chatWindow.classList.toggle('hidden');
-            if (!chatWindow.classList.contains('hidden')) {
-                chatInput.focus();
-                // Check if API key is configured
-                if (GEMINI_API_KEY === 'SUA_API_KEY_AQUI') {
-                    apiStatus.textContent = '• Configure a API Key';
-                    apiStatus.className = 'text-yellow-400 ml-1';
-                } else {
-                    apiStatus.textContent = '• IA Ativa';
-                    apiStatus.className = 'text-green-400 ml-1';
-                }
+        // Add GSAP ScrollTo plugin inline
+        gsap.registerPlugin({
+            name: "scrollTo",
+            init(target, value) {
+                this.target = target;
+                this.y = typeof value === 'object' ? value.y : value;
+                this.offsetY = typeof value === 'object' ? (value.offsetY || 0) : 0;
+                this.start = window.pageYOffset;
+                const targetEl = typeof this.y === 'string' ? document.querySelector(this.y) : null;
+                this.end = targetEl ? targetEl.offsetTop - this.offsetY : this.y;
+            },
+            render(progress) {
+                window.scrollTo(0, this.start + (this.end - this.start) * progress);
             }
         });
 
-        chatClose.addEventListener('click', () => {
-            chatWindow.classList.add('hidden');
+        // Hero parallax on mouse move
+        const heroSection = document.querySelector('section:first-of-type');
+        heroSection.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            
+            gsap.to('.float-element', {
+                x: moveX,
+                y: moveY,
+                duration: 1,
+                ease: 'power2.out'
+            });
         });
 
-        // Add message to chat
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex gap-3' + (isUser ? ' flex-row-reverse' : '');
+        // Card tilt effect
+        document.querySelectorAll('.holo-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
             
-            const icon = isUser ? '👤' : '🤖';
-            const bubbleClass = isUser ? 'bg-indigo-600 rounded-tr-none' : 'bg-gray-800/50 rounded-tl-none';
-            
-            messageDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full ${isUser ? 'bg-indigo-500' : 'bg-indigo-500/20'} flex items-center justify-center text-sm flex-shrink-0">${icon}</div>
-                <div class="${bubbleClass} rounded-2xl px-4 py-3 max-w-[80%]">
-                    <p class="text-sm text-gray-100">${text}</p>
-                </div>
-            `;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Show typing indicator
-        function showTyping() {
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'flex gap-3';
-            typingDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-sm flex-shrink-0">🤖</div>
-                <div class="bg-gray-800/50 rounded-2xl rounded-tl-none px-4 py-3">
-                    <div class="flex gap-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                    </div>
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Remove typing indicator
-        function hideTyping() {
-            const typing = document.getElementById('typing-indicator');
-            if (typing) typing.remove();
-        }
-
-        // Call Gemini API
-        async function callGemini(userMessage) {
-            if (GEMINI_API_KEY === 'SUA_API_KEY_AQUI') {
-                return "⚠️ API Key não configurada.\n\nPara ativar o chat:\n1. Obtenha uma chave gratuita em: ai.google.dev\n2. Substitua 'SUA_API_KEY_AQUI' no código\n3. O plano gratuito permite 60 requisições/minuto!";
-            }
-
-            try {
-                const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            role: 'user',
-                            parts: [{
-                                text: `${SYSTEM_PROMPT}\n\nPergunta do recrutador: ${userMessage}`
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 500,
-                        }
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('API Error');
-                }
-
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                console.error('Error:', error);
-                return "Desculpe, estou com dificuldades técnicas. Mas posso te garantir: Rodrigo é excelente em resolver esse tipo de problema! 😄 Entre em contato direto: rodrigo@asia.com";
-            }
-        }
-
-        // Send message
-        async function sendMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            // Add user message
-            addMessage(text, true);
-            chatInput.value = '';
-
-            // Show typing
-            showTyping();
-
-            // Get AI response
-            const response = await callGemini(text);
-            
-            // Hide typing and add response
-            hideTyping();
-            addMessage(response);
-        }
-
-        // Event listeners
-        chatSend.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
         });
     </script>
 </body>
